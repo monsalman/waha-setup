@@ -1,0 +1,26 @@
+services:
+  waha:
+    image: devlikeapro/waha:latest
+    container_name: satu-cakrawala-waha
+    restart: always
+    ports:
+      - "3001:3000"
+    env_file:
+      - .env
+    volumes:
+      # Session data - persist agar WhatsApp tetap login setelah restart
+      - ./.sessions:/app/.sessions
+      # Media files - gambar, video, dokumen yang diterima/dikirim
+      - ./.media:/app/.media
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "-H", "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf", "http://localhost:3000/api/sessions"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

@@ -1,0 +1,29 @@
+# WAHA Gateway - Satu Cakrawala
+# Ignore sensitive and runtime files
+
+# Session data (contains WhatsApp auth)
+.sessions/
+
+# Media files
+.media/
+
+# QR codes
+qr-code.png
+
+# Cloudflared binary
+cloudflared
+
+# Logs
+tunnel.log
+*.log
+
+# Environment (contains secrets)
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.bak

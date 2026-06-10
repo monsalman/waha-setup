@@ -1,0 +1,14 @@
+[Unit]
+Description=Cloudflare Quick Tunnel - Satu Cakrawala WAHA
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+ExecStart=/home/mannn/satu-cakrawala/waha-gateway/cloudflared tunnel --url http://localhost:3001
+Restart=always
+RestartSec=10
+User=mannn
+
+[Install]
+WantedBy=multi-user.target
