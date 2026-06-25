@@ -27,3 +27,9 @@ Thumbs.db
 # Temp files
 *.tmp
 *.bak
+
+# Python backend
+backend/data/
+__pycache__/
+*.pyc
+*.pyo

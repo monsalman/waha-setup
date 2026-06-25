@@ -38,9 +38,9 @@ Mahasiswa terima balasan di WhatsApp
 
 | | Value |
 |---|---|
-| **API Key** (header `X-Api-Key`) | `4c94510d4aaf48bbb286aaeb65a0bcdf` |
+| **API Key** (header `X-Api-Key`) | `$WAHA_API_KEY` |
 | **Dashboard User** | `admin` |
-| **Dashboard Password** | `SatuCakrawala2024!` |
+| **Dashboard Password** | `<your-dashboard-password>` |
 
 > ⚠️ Quick Tunnel URL berubah kalau proses cloudflared mati.  
 > Untuk production, gunakan Named Tunnel dengan domain sendiri.
@@ -80,7 +80,7 @@ docker ps --filter name=satu-cakrawala-waha
 ```bash
 # Create dan start session (otomatis generate QR)
 curl -X POST https://capacity-undertaken-flash-recommendation.trycloudflare.com/api/sessions \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf" \
+  -H "X-Api-Key: $WAHA_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"name": "default", "start": true}'
 ```
@@ -99,7 +99,7 @@ curl -X POST https://capacity-undertaken-flash-recommendation.trycloudflare.com/
 ```bash
 # Download QR sebagai PNG
 curl -X GET "https://capacity-undertaken-flash-recommendation.trycloudflare.com/api/default/auth/qr" \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf" \
+  -H "X-Api-Key: $WAHA_API_KEY" \
   -H "Accept: image/png" \
   -o qr-code.png
 ```
@@ -110,7 +110,7 @@ Lalu scan QR dengan WhatsApp HP: **Menu → Perangkat Tertaut → Tautkan Perang
 
 ```bash
 # List semua session
-curl -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf" \
+curl -H "X-Api-Key: $WAHA_API_KEY" \
   https://capacity-undertaken-flash-recommendation.trycloudflare.com/api/sessions
 ```
 
@@ -139,7 +139,7 @@ curl -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf" \
 
 ```bash
 curl -X POST "https://capacity-undertaken-flash-recommendation.trycloudflare.com/api/sessions/default/stop" \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf"
+  -H "X-Api-Key: $WAHA_API_KEY"
 ```
 
 ### Logout Session
@@ -147,7 +147,7 @@ curl -X POST "https://capacity-undertaken-flash-recommendation.trycloudflare.com
 ```bash
 # Hapus session (perlu scan QR ulang)
 curl -X DELETE "https://capacity-undertaken-flash-recommendation.trycloudflare.com/api/sessions/default" \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf"
+  -H "X-Api-Key: $WAHA_API_KEY"
 ```
 
 ### Restart Session (kalau WhatsApp logout)
@@ -155,15 +155,15 @@ curl -X DELETE "https://capacity-undertaken-flash-recommendation.trycloudflare.c
 ```bash
 # Stop dulu
 curl -X POST "https://capacity-undertaken-flash-recommendation.trycloudflare.com/api/sessions/default/stop" \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf"
+  -H "X-Api-Key: $WAHA_API_KEY"
 
 # Delete session lama
 curl -X DELETE "https://capacity-undertaken-flash-recommendation.trycloudflare.com/api/sessions/default" \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf"
+  -H "X-Api-Key: $WAHA_API_KEY"
 
 # Create ulang + start (akan generate QR baru)
 curl -X POST "https://capacity-undertaken-flash-recommendation.trycloudflare.com/api/sessions" \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf" \
+  -H "X-Api-Key: $WAHA_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"name": "default", "start": true}'
 ```
@@ -172,13 +172,13 @@ curl -X POST "https://capacity-undertaken-flash-recommendation.trycloudflare.com
 
 ## Endpoint API — Kirim Pesan
 
-Semua endpoint membutuhkan header `X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf`
+Semua endpoint membutuhkan header `X-Api-Key: $WAHA_API_KEY`
 
 ### Kirim Text
 
 ```bash
 curl -X POST https://capacity-undertaken-flash-recommendation.trycloudflare.com/api/sendText \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf" \
+  -H "X-Api-Key: $WAHA_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "session": "default",
@@ -202,7 +202,7 @@ curl -X POST https://capacity-undertaken-flash-recommendation.trycloudflare.com/
 
 ```bash
 curl -X POST https://capacity-undertaken-flash-recommendation.trycloudflare.com/api/sendImage \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf" \
+  -H "X-Api-Key: $WAHA_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "session": "default",
@@ -216,7 +216,7 @@ curl -X POST https://capacity-undertaken-flash-recommendation.trycloudflare.com/
 
 ```bash
 curl -X POST https://capacity-undertaken-flash-recommendation.trycloudflare.com/api/sendFile \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf" \
+  -H "X-Api-Key: $WAHA_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "session": "default",
@@ -230,7 +230,7 @@ curl -X POST https://capacity-undertaken-flash-recommendation.trycloudflare.com/
 
 ```bash
 curl -X POST https://capacity-undertaken-flash-recommendation.trycloudflare.com/api/sendSeen \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf" \
+  -H "X-Api-Key: $WAHA_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "session": "default",
@@ -259,7 +259,7 @@ Webhook bisa diset **per-session** via API (direkomendasikan):
 ```bash
 # Set webhook saat create session
 curl -X POST https://capacity-undertaken-flash-recommendation.trycloudflare.com/api/sessions \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf" \
+  -H "X-Api-Key: $WAHA_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "default",
@@ -388,7 +388,7 @@ async def send_whatsapp_message(chat_id: str, text: str):
     async with httpx.AsyncClient() as client:
         await client.post(
             "https://capacity-undertaken-flash-recommendation.trycloudflare.com/api/sendText",
-            headers={"X-Api-Key": "4c94510d4aaf48bbb286aaeb65a0bcdf"},
+            headers={"X-Api-Key": "$WAHA_API_KEY"},
             json={
                 "session": "default",
                 "chatId": chat_id,
@@ -427,20 +427,20 @@ pkill -f "cloudflared tunnel"
 ```bash
 # Restart session
 curl -X POST http://localhost:3001/api/sessions/default/stop \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf"
+  -H "X-Api-Key: $WAHA_API_KEY"
 
 # Delete dan buat ulang
 curl -X DELETE http://localhost:3001/api/sessions/default \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf"
+  -H "X-Api-Key: $WAHA_API_KEY"
 
 curl -X POST http://localhost:3001/api/sessions \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf" \
+  -H "X-Api-Key: $WAHA_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"name":"default","start":true}'
 
 # Scan QR baru
 curl -X GET "http://localhost:3001/api/default/auth/qr" \
-  -H "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf" \
+  -H "X-Api-Key: $WAHA_API_KEY" \
   -o qr-code.png
 ```
 

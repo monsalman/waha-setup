@@ -1,4 +1,5 @@
 services:
+  # --- WhatsApp transport (unchanged) ---
   waha:
     image: devlikeapro/waha:latest
     container_name: satu-cakrawala-waha
@@ -19,8 +20,28 @@ services:
         reservations:
           memory: 256M
     healthcheck:
-      test: ["CMD", "curl", "-sf", "-H", "X-Api-Key: 4c94510d4aaf48bbb286aaeb65a0bcdf", "http://localhost:3000/api/sessions"]
+      test: ["CMD-SHELL", "curl -sf -H \"X-Api-Key: $$WAHA_API_KEY\" http://localhost:3000/api/sessions || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+
+  # --- Backend logic (Python/FastAPI) = the "waha-gateway backend" ---
+  backend:
+    build: ./backend
+    container_name: satu-cakrawala-backend
+    restart: always
+    ports:
+      - "3002:3002"
+    env_file:
+      - ./backend/.env
+    environment:
+      # docker-network overrides (win over backend/.env)
+      WAHA_BASE_URL: http://satu-cakrawala-waha:3000
+      WEBHOOK_PUBLIC_URL: http://satu-cakrawala-backend:3002
+      FRONTEND_DIR: /app/frontend
+    volumes:
+      - ./backend/data:/app/data            # SQLite persistence
+      - ../waha-control:/app/frontend:ro    # serve the dashboard (frontend-only folder)
+    depends_on:
+      - waha
