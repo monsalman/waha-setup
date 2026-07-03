@@ -1,17 +1,14 @@
 services:
-  # --- WhatsApp transport (unchanged) ---
+  # --- WhatsApp transport (internal only, not exposed to public) ---
   waha:
     image: devlikeapro/waha:latest
     container_name: satu-cakrawala-waha
     restart: always
-    ports:
-      - "3001:3000"
+    # ponytail: no ports published — WAHA is internal only; add ports if WAHA dashboard needed
     env_file:
       - .env
     volumes:
-      # Session data - persist agar WhatsApp tetap login setelah restart
       - ./.sessions:/app/.sessions
-      # Media files - gambar, video, dokumen yang diterima/dikirim
       - ./.media:/app/.media
     deploy:
       resources:
@@ -20,28 +17,40 @@ services:
         reservations:
           memory: 256M
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf -H \"X-Api-Key: $$WAHA_API_KEY\" http://localhost:3000/api/sessions || exit 1"]
+      test: ["CMD-SHELL", "curl -sf -H \"X-Api-Key: $WAHA_API_KEY\" http://localhost:3000/api/sessions || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
+    labels:
+      - "traefik.enable=false"
 
-  # --- Backend logic (Python/FastAPI) = the "waha-gateway backend" ---
+  # --- Backend logic (Python/FastAPI) — exposed via Traefik ---
   backend:
     build: ./backend
     container_name: satu-cakrawala-backend
     restart: always
-    ports:
-      - "3002:3002"
     env_file:
       - ./backend/.env
     environment:
       # docker-network overrides (win over backend/.env)
       WAHA_BASE_URL: http://satu-cakrawala-waha:3000
-      WEBHOOK_PUBLIC_URL: http://satu-cakrawala-backend:3002
+      WEBHOOK_PUBLIC_URL: https://waha.sudobrew.dev
       FRONTEND_DIR: /app/frontend
     volumes:
-      - ./backend/data:/app/data            # SQLite persistence
-      - ../waha-control:/app/frontend:ro    # serve the dashboard (frontend-only folder)
+      - ./backend/data:/app/data
     depends_on:
       - waha
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.satu-cakrawala-backend.rule=Host(`waha.sudobrew.dev`)"
+      - "traefik.http.routers.satu-cakrawala-backend.entrypoints=web"
+      - "traefik.http.routers.satu-cakrawala-backend-secure.rule=Host(`waha.sudobrew.dev`)"
+      - "traefik.http.routers.satu-cakrawala-backend-secure.entrypoints=websecure"
+      - "traefik.http.routers.satu-cakrawala-backend-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.services.satu-cakrawala-backend.loadbalancer.server.port=3002"
+
+networks:
+  default:
+    external: true
+    name: dokploy-network
