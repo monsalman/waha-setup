@@ -12,7 +12,7 @@ def _get(key: str, default: str = "") -> str:
 
 
 class Config:
-    PORT = int(_get("PORT", "3002"))
+    PORT = int(_get("BACKEND_PORT", "3002"))
     NODE_ENV = _get("NODE_ENV", "development")
     WAHA_BASE_URL = _get("WAHA_BASE_URL", "http://localhost:3001").rstrip("/")
     WAHA_API_KEY = _get("WAHA_API_KEY", "")  # set via .env / compose
