@@ -4,7 +4,6 @@ services:
     image: devlikeapro/waha:latest
     container_name: satu-cakrawala-waha
     restart: always
-    # ponytail: no ports published — WAHA is internal only; add ports if WAHA dashboard needed
     env_file:
       - .env
     volumes:
@@ -31,7 +30,7 @@ services:
     container_name: satu-cakrawala-backend
     restart: always
     env_file:
-      - ./backend/.env
+      - .env
     environment:
       # docker-network overrides (win over backend/.env)
       WAHA_BASE_URL: http://satu-cakrawala-waha:3000
